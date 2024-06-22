@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatBot</title>
+    <style>
+      #messages {
+        height: 300px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        padding: 5px;
+        overflow-y: scroll;
+        background-color: blueviolet;
+      }
+    </style>
+  </head>
+  <body bgcolor="green">
+    <div id="messages"></div>
+    <form id="form">
+      <input
+        type="text"
+        id="input"
+        autocomplete="on"
+        autofocus
+        placeholder="Type a message..."
+      />
+      <button type="submit">Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit("message", input.value);
+          input.value = "";
+        }
+      });
+
+
+      socket.on("message", function (msg) {
+        const item = document.createElement("li");
+        item.textContent = msg;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      app.post('/message', async (req, res) => {
+  const message = req.body.message;
+  const response = await bot.processMessage(message);
+  res.json({ response });
+});
+
+    </script>
+  </body>
+</html>
